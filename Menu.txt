@@ -1,0 +1,97 @@
+#include <iostream>
+#include <string>
+#include <windows.h>
+#include <cstdlib>
+#include <ctime>
+
+using namespace std;
+
+void Start();
+void Game();
+void Difficulty();
+
+int main() {
+
+	Start();
+	system("exit");
+}
+
+int userInput = 0;
+
+void Start() {
+
+	system("cls");
+	system("color e");
+	cout << "******************************************************************************\n";
+	cout << "***************************     Spacial Robot      ***************************\n";
+	cout << "******************************************************************************\n";
+	Beep(80, 300);
+
+
+	system("pause");
+	system("cls");
+	Game();
+}
+void Game() {
+
+	cout << "***************************************************************\n";
+	cout << "****************** [1]  Start the Game ************************\n";
+	cout << "****************** [2]       Exit      ************************\n";
+	cout << "***************************************************************\n";
+
+	cout << "\n\n>\t";
+
+	while (!(cin >> userInput) || userInput < 1 || userInput > 2) {
+		cout << "Wrong Choice.\n";
+		Sleep(1000);
+		cout << "Try Again.\n";
+		cin.clear();
+		cin.ignore(100, '\n');
+	}
+
+	if (userInput == 1) {
+		system("cls");
+		Difficulty();
+	}
+	else {
+		system("cls");
+		system("exit");
+	}
+}
+void Difficulty() {
+
+	cout << "\n Escolha a dificuldade:\n\n";
+	cout << " [1] Easy\n";
+	cout << " [2] Normal\n";
+	cout << " [3] Hard\n";
+	cout << " [4] Extreme\n\n";
+	cout << "\n >\t";
+	while (!(cin >> userInput) || userInput < 1 || userInput > 4) {
+		cout << "\n Errou!!!\n";
+		cin.clear();
+		cin.ignore(100, '\n');
+	}
+	system("cls");
+	switch (userInput) {
+	case 1:
+		cout << "\n Dificuldade escolhida - Easy\n";
+		system("pause");
+		break;
+	case 2:
+		cout << "\n Dificuldade escolhida - Normal\n";
+		system("pause");
+		break;
+	case 3:
+		cout << "\n Dificuldade escolhida - Hard\n";
+		system("pause");
+		break;
+	case 4:
+		cout << "\n Dificuldade escolhida - Extreme\n";
+		system("pause");
+		break;
+	default:
+		cout << "\n Nada\n";
+	}
+	system("cls");
+	Difficulty();
+}

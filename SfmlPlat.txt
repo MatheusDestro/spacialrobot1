@@ -1,0 +1,108 @@
+#include <iostream>
+#include <SFML\Graphics.hpp>
+
+using namespace sf;
+
+int main(){
+
+	RenderWindow app(VideoMode(1000,600), "Spacial Robot");
+	app.setFramerateLimit(120);
+
+	//Texture t1;
+	//t1.loadFromFile("images\pepsi.png"); 
+	CircleShape circle(15,4);
+	RectangleShape rect1(Vector2f(150, 20));
+	RectangleShape rect2(Vector2f(150, 20));
+	RectangleShape rect3(Vector2f(75, 10));
+	RectangleShape chao(Vector2f(1000, 20));
+	circle.setFillColor(Color(255,0,0));
+	rect1.setFillColor(Color::Yellow);
+	rect2.setFillColor(Color::Yellow);
+	rect3.setFillColor(Color::Blue);
+	chao.setFillColor(Color::Green);
+	//Sprite sPers(t1);
+
+	int x = 50, y = 550;
+	float dx = 0, dy = 0;
+	bool countkey = false;
+	int jumps=0;
+
+	while (app.isOpen())
+	{
+		Event e;
+		while (app.pollEvent(e))
+		{
+			if (e.type == Event::Closed)
+				app.close();
+		}
+		
+		if (y > 0) {
+			if (Keyboard::isKeyPressed(Keyboard::Right)) x += 3;
+			if (Keyboard::isKeyPressed(Keyboard::Left)) x -= 3;
+			if (jumps < 1) {
+				if (Keyboard::isKeyPressed(Keyboard::Up)) {
+					dy = -8;
+					jumps += 1;
+				}
+			}
+
+			dy += 0.2;
+			y += dy;
+			
+			//chão
+			if (y > 550) {
+				dy = 0;
+				jumps = 0;
+			}
+			//tela
+			if (x > 970)  x -= 3;
+			if (x < 0) x += 3;
+			//esquerda
+			if ((x > 250-25) && (x < 250-15) && (y > 480-35) && (y < 480))	x -= 3;
+			if ((x > 650-25) && (x < 650-15) && (y > 480-35) && (y < 480))	x -= 3;
+			if ((x > 900-25) && (x < 900-15) && (y > 350-35) && (y < 350))	x -= 3;
+			//direita
+			if ((x > 250 + 150 - 5) && (x < 250 + 150 + 5) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 650 + 150 - 5) && (x < 650 + 150 + 5) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 900 + 75 - 5) && (x < 900 + 75 + 5) && (y > 350 - 35) && (y < 350))	x += 3;
+			//cima
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 - 15 - 5) && (y > 350 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			//baixo
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))	dy += 10;
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))	dy += 10;
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 + 15 + 5) && (y > 350 - 15 - 10) && (dy < 0))	dy += 10;
+		}
+		else {
+			dy += 10;
+			y += dy;
+		}
+		circle.setPosition(x, y);
+		rect1.setPosition(250,480);
+		rect2.setPosition(650, 480);
+		rect3.setPosition(900, 350);
+		chao.setPosition(0, 580);
+
+
+		//app.draw(sPers);
+		app.clear(Color::Black);
+		app.draw(chao);
+		app.draw(circle);
+		app.draw(rect1);
+		app.draw(rect2);
+		app.draw(rect3);
+		app.display();
+	}
+
+	return 0;
+}
