@@ -1,0 +1,121 @@
+#include "Manager.h"
+
+
+
+Manager::Manager()
+{
+	janela = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Jogo");
+
+	textureEnemy.loadFromFile("enemy.png");
+	spriteEnemy.setTexture(textureEnemy);
+	step = 1;
+}
+
+
+Manager::~Manager()
+{
+	delete janela;
+}
+
+void Manager::Programa()
+{
+	while (quit == false)
+	{
+		Inputs();
+		Update();
+		Render();
+	}
+}
+
+void Manager::Inputs()
+{
+	while (janela->pollEvent(eventos))
+	{
+		posicaoMouse = sf::Mouse::getPosition(*janela);
+		switch (eventos.type)
+		{
+		case sf::Event::Closed:
+			quit = true;
+			break;
+		case sf::Event::KeyPressed:
+			InputTeclado();
+			break;
+		case sf::Event::MouseButtonPressed:
+			MouseClicado();
+			break;
+		case sf::Event::MouseMoved:
+			MouseMovido();
+			break;
+		}
+	}
+}
+
+void Manager::Update()
+{
+	enemy_posY += step;
+
+	if (enemy_posY >= 720 || enemy_posY <= 0)
+	{
+		step *= -1;
+	}
+	spriteEnemy.setPosition(enemy_posX, enemy_posY);
+}
+
+void Manager::Render()
+{
+	janela->clear();
+	janela->draw(spriteEnemy);
+	janela->display();
+}
+
+void Manager::UpdateMenu()
+{
+}
+
+void Manager::UpdateJogo()
+{
+}
+
+void Manager::UpdateGameOver()
+{
+}
+
+void Manager::RenderMenu()
+{
+}
+
+void Manager::RenderJogo()
+{
+}
+
+void Manager::RenderGameOver()
+{
+}
+
+void Manager::InputTeclado()
+{
+	switch (eventos.key.code)
+	{
+	case sf::Keyboard::Escape:
+		quit = true;
+		break;
+	case sf::Keyboard::A:
+		break;
+	}
+}
+
+void Manager::MouseClicado()
+{
+	switch (eventos.mouseButton.button)
+	{
+	case sf::Mouse::Left: //Mouse Botao Esquerdo Pressionado
+		break;
+
+	case sf::Mouse::Right: //Mouse Botao Direito Pressionado
+		break;
+	}
+}
+
+void Manager::MouseMovido()
+{
+}
