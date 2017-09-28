@@ -1,0 +1,285 @@
+#include "Manager.h"
+
+Manager::Manager()
+{
+	app = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Spacial Robot");
+	app->setFramerateLimit(120);
+}
+
+Manager::~Manager()
+{
+	delete app;
+}
+
+void Manager::Programa()
+{
+	while (quit == false)
+	{
+		Inputs();
+		Update();
+		Render();
+	}
+}
+
+void Manager::Inputs()
+{
+	while (app->pollEvent(eventos))
+	{
+		posicaoMouse = sf::Mouse::getPosition(*app);
+		switch (eventos.type)
+		{
+		case sf::Event::Closed:
+			quit = true;
+			break;
+		case sf::Event::KeyPressed:
+			InputTeclado();
+			break;
+		case sf::Event::MouseButtonPressed:
+			MouseClicado();
+			break;
+		case sf::Event::MouseMoved:
+			MouseMovido();
+			break;
+		}
+	}
+}
+
+void Manager::Update()
+{
+	switch (estadoTela)
+	{
+	case MENU:
+		UpdateMenu();
+		break;
+
+	case JOGO:
+		UpdateJogo();
+		break;
+
+	case GAMEOVER:
+		UpdateGameOver();
+		break;
+	}
+}
+
+void Manager::Render()
+{
+	switch (estadoTela)
+	{
+	case MENU:
+		RenderMenu();
+		break;
+
+	case JOGO:
+		RenderJogo();
+		break;
+
+	case GAMEOVER:
+		RenderGameOver();
+		break;
+	}
+}
+
+void Manager::UpdateMenu()
+{
+	system("cls");
+	system("color e");
+	std::cout << "******************************************************************************\n";
+	std::cout << "***************************     Spacial Robot      ***************************\n";
+	std::cout << "******************************************************************************\n";
+
+	system("pause");
+	system("cls");
+
+	std::cout << "***************************************************************\n";
+	std::cout << "****************** [1]  Start the Game ************************\n";
+	std::cout << "****************** [2]       Exit      ************************\n";
+	std::cout << "***************************************************************\n";
+
+	std::cout << "\n\n>\t";
+	while (!(std::cin >> userInput) || userInput < 1 || userInput > 2) {
+		std::cout << "Wrong Choice.\nTry Again.\n";
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+	}
+
+	if (userInput == 1) {
+		system("cls");
+		Difficulty();
+	}
+	else {
+		system("cls");
+		system("exit");
+	}
+}
+
+void Manager::Difficulty() {
+
+	std::cout << "\n Escolha a dificuldade:\n\n";
+	std::cout << " [1] Easy\n";
+	std::cout << " [2] Normal\n";
+	std::cout << " [3] Hard\n";
+	std::cout << " [4] Extreme\n\n";
+	std::cout << "\n >\t";
+	while (!(std::cin >> userInput) || userInput < 1 || userInput > 4) {
+		std::cout << "\n Errou!!!\n";
+		std::cin.clear();
+		std::cin.ignore(100, '\n');
+	}
+	system("cls");
+	switch (userInput) {
+	case 1:
+		std::cout << "\n Dificuldade escolhida - Easy\n";
+		system("pause");
+		estadoTela += 1;
+		Render();
+		break;
+	case 2:
+		std::cout << "\n Dificuldade escolhida - Normal\n";
+		system("pause");
+		estadoTela += 1;
+		Render();
+		break;
+	case 3:
+		std::cout << "\n Dificuldade escolhida - Hard\n";
+		system("pause");
+		estadoTela += 1;
+		Render();
+		break;
+	case 4:
+		std::cout << "\n Dificuldade escolhida - Extreme\n";
+		system("pause");
+		estadoTela += 1;
+		Render();
+		break;
+	default:
+		std::cout << "\n Nada\n";
+	}
+}
+
+void Manager::UpdateJogo()
+{
+	{
+
+		if (y > 0) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) x += 3;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) x -= 3;
+			if (jumps < 1) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+					dy = -8;
+					jumps += 1;
+				}
+			}
+
+			dy += 0.2;
+			y += dy;
+
+			//chão
+			if (y > 550) {
+				dy = 0;
+				jumps = 0;
+			}
+			//tela
+			if (x > 970)  x -= 3;
+			if (x < 0) x += 3;
+			//esquerda
+			if ((x > 250 - 25) && (x < 250 - 15) && (y > 480 - 35) && (y < 480))    x -= 3;
+			if ((x > 650 - 25) && (x < 650 - 15) && (y > 480 - 35) && (y < 480))    x -= 3;
+			if ((x > 900 - 25) && (x < 900 - 15) && (y > 350 - 35) && (y < 350))    x -= 3;
+			//direita
+			if ((x > 250 + 150 - 5) && (x < 250 + 150 + 5) && (y > 480 - 35) && (y < 480))  x += 3;
+			if ((x > 650 + 150 - 5) && (x < 650 + 150 + 5) && (y > 480 - 35) && (y < 480))  x += 3;
+			if ((x > 900 + 75 - 5) && (x < 900 + 75 + 5) && (y > 350 - 35) && (y < 350))    x += 3;
+			//cima
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 - 15 - 5) && (y > 350 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			//baixo
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))    dy += 10;
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))    dy += 10;
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 + 15 + 5) && (y > 350 - 15 - 10) && (dy < 0)) dy += 10;
+		}
+		else {
+			dy += 10;
+			y += dy;
+		}
+	}
+}
+
+void Manager::UpdateGameOver()
+{
+}
+
+void Manager::RenderMenu()
+{
+}
+
+void Manager::RenderJogo()
+{
+	sf::CircleShape circle(15, 4);
+	sf::RectangleShape rect1(sf::Vector2f(150, 20));
+	sf::RectangleShape rect2(sf::Vector2f(150, 20));
+	sf::RectangleShape rect3(sf::Vector2f(75, 10));
+	sf::RectangleShape chao(sf::Vector2f(1000, 20));
+
+	circle.setFillColor(sf::Color(255, 0, 0));
+	rect1.setFillColor(sf::Color::Yellow);
+	rect2.setFillColor(sf::Color::Yellow);
+	rect3.setFillColor(sf::Color::Blue);
+	chao.setFillColor(sf::Color::Green);
+
+	circle.setPosition(x, y);
+	rect1.setPosition(250, 480);
+	rect2.setPosition(650, 480);
+	rect3.setPosition(900, 350);
+	chao.setPosition(0, 580);
+
+	app->clear(sf::Color::Black);
+	app->draw(chao);
+	app->draw(circle);
+	app->draw(rect1);
+	app->draw(rect2);
+	app->draw(rect3);
+	app->display();
+}
+
+void Manager::RenderGameOver()
+{
+}
+
+void Manager::InputTeclado()
+{
+	switch (eventos.key.code)
+	{
+	case sf::Keyboard::Escape:
+		quit = true;
+		break;
+	case sf::Keyboard::A:
+		break;
+	}
+}
+
+void Manager::MouseClicado()
+{
+	switch (eventos.mouseButton.button)
+	{
+	case sf::Mouse::Left: //Mouse Botao Esquerdo Pressionado
+		break;
+
+	case sf::Mouse::Right: //Mouse Botao Direito Pressionado
+		break;
+	}
+}
+
+void Manager::MouseMovido()
+{
+}
