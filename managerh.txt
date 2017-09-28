@@ -1,0 +1,51 @@
+#pragma once
+#include <iostream>
+#include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
+
+#define SCREEN_HEIGHT 600
+#define SCREEN_WIDTH 1000
+
+#define MENU 0
+#define JOGO 1
+#define GAMEOVER 2
+
+class Manager
+{
+private: //AQUI VOCÊ CRIA AS VARIÁVEIS
+	sf::RenderWindow *app = nullptr;
+	sf::Vector2i posicaoMouse;
+	sf::Event eventos;
+
+	short estadoTela = MENU;
+	bool quit = false;
+
+	int userInput = 0;
+	int x = 50, y = 550;
+	float dx = 0, dy = 0;
+	bool countkey = false;
+	int jumps = 0;
+
+public:
+	Manager();
+	~Manager();
+
+	void Programa();
+
+	void Inputs();
+	void Update();
+	void Render();
+
+	void UpdateMenu();
+	void UpdateJogo();
+	void UpdateGameOver();
+
+	void Difficulty();
+	void RenderMenu();
+	void RenderJogo();
+	void RenderGameOver();
+
+	void InputTeclado();
+	void MouseClicado();
+	void MouseMovido();
+};
