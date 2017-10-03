@@ -1,9 +1,24 @@
 #include "Manager.h"
 
+
+
 Manager::Manager()
 {
 	app = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Spacial Robot");
 	app->setFramerateLimit(120);
+
+	textureEnemy.loadFromFile("enemy.jpg", sf::IntRect(20,20,60,60));
+	spriteEnemy.setTexture(textureEnemy);
+	step = 1;
+
+	textureStar.loadFromFile("star.jpg", sf::IntRect(0, 0, 20, 20));
+	spriteStar1.setTexture(textureStar);
+	spriteStar2.setTexture(textureStar);
+	spriteStar3.setTexture(textureStar);
+
+	if (!font.loadFromFile("arial.ttf")) {
+		// handle error
+	}
 }
 
 Manager::~Manager()
@@ -40,6 +55,60 @@ void Manager::Inputs()
 		case sf::Event::MouseMoved:
 			MouseMovido();
 			break;
+			if (estadoTela == MENU) {
+			case sf::Event::KeyReleased:
+				switch (eventos.key.code)		{
+				case sf::Keyboard::Up:
+					userInput -= 1;
+					getpresseditem = userInput;
+					break;
+				case sf::Keyboard::Down:
+					userInput += 1;
+					getpresseditem = userInput;
+					break;
+				case sf::Keyboard::Return:
+					switch (Menu)
+					{
+					case 0:
+						switch (getpresseditem) {
+						case 0:
+							Difficulty();
+							Menu += 1;
+							break;
+						case 1:
+							std::cout << "Opissoeins" << std::endl;
+							break;
+						case 2:
+							quit = true;
+							break;
+						}
+						break;
+					case 1:
+						switch (getpresseditem) {
+						case 0:
+							Menu += 1;
+							estadoTela += 1;
+							Programa();
+							break;
+						case 1:
+							Menu += 1;
+							estadoTela += 1;
+							Programa();
+							break;
+						case 2:
+								Menu += 1;
+							estadoTela += 1;
+							Programa();
+							break;
+						case 3:
+							Menu += 1;
+							estadoTela += 1;
+							Programa();
+							break;
+						}
+					}
+				}
+			}
 		}
 	}
 }
@@ -49,9 +118,16 @@ void Manager::Update()
 	switch (estadoTela)
 	{
 	case MENU:
-		UpdateMenu();
+		switch (Menu) {
+		case 0:
+			UpdateMenu();
+			break;
+		case 1:
+			Difficulty();
+			break;
+		}
 		break;
-
+		
 	case JOGO:
 		UpdateJogo();
 		break;
@@ -64,10 +140,18 @@ void Manager::Update()
 
 void Manager::Render()
 {
+	app->display();
 	switch (estadoTela)
 	{
 	case MENU:
-		RenderMenu();
+		switch (Menu){
+		case 0:
+			RenderMenu();
+			break;
+		case 1:
+			RenderDifficulty();
+			break;
+		}
 		break;
 
 	case JOGO:
@@ -82,85 +166,61 @@ void Manager::Render()
 
 void Manager::UpdateMenu()
 {
-	system("cls");
-	system("color e");
-	std::cout << "******************************************************************************\n";
-	std::cout << "***************************     Spacial Robot      ***************************\n";
-	std::cout << "******************************************************************************\n";
+	if (userInput == 3) userInput = 2;
+	if (userInput == -1) userInput = 0;
 
-	system("pause");
-	system("cls");
+	menu[0].setFont(font);
+	if (userInput == 0)	menu[0].setFillColor(sf::Color::Green);
+	else menu[0].setFillColor(sf::Color::White);
+	menu[0].setString("Start");
+	menu[0].setPosition(sf::Vector2f(SCREEN_WIDTH / 4,SCREEN_HEIGHT/ 4 * 1));
 
-	std::cout << "***************************************************************\n";
-	std::cout << "****************** [1]  Start the Game ************************\n";
-	std::cout << "****************** [2]       Exit      ************************\n";
-	std::cout << "***************************************************************\n";
+	menu[1].setFont(font);
+	if (userInput == 1) menu[1].setFillColor(sf::Color::Green); 
+	else  menu[1].setFillColor(sf::Color::White); 
+	menu[1].setString("Options");
+	menu[1].setPosition(sf::Vector2f(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4 * 2));
 
-	std::cout << "\n\n>\t";
-	while (!(std::cin >> userInput) || userInput < 1 || userInput > 2) {
-		std::cout << "Wrong Choice.\nTry Again.\n";
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-	}
+	menu[2].setFont(font);
+	if (userInput == 2) menu[2].setFillColor(sf::Color::Green);
+	else menu[2].setFillColor(sf::Color::White);
+	menu[2].setString("Exit");
+	menu[2].setPosition(sf::Vector2f(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4 * 3));
 
-	if (userInput == 1) {
-		system("cls");
-		Difficulty();
-	}
-	else {
-		system("cls");
-		system("exit");
-	}
 }
 
 void Manager::Difficulty() {
+	if (userInput == 4) userInput = 3;
+	if (userInput == -1) userInput = 0;
 
-	std::cout << "\n Escolha a dificuldade:\n\n";
-	std::cout << " [1] Easy\n";
-	std::cout << " [2] Normal\n";
-	std::cout << " [3] Hard\n";
-	std::cout << " [4] Extreme\n\n";
-	std::cout << "\n >\t";
-	while (!(std::cin >> userInput) || userInput < 1 || userInput > 4) {
-		std::cout << "\n Errou!!!\n";
-		std::cin.clear();
-		std::cin.ignore(100, '\n');
-	}
-	system("cls");
-	switch (userInput) {
-	case 1:
-		std::cout << "\n Dificuldade escolhida - Easy\n";
-		system("pause");
-		estadoTela += 1;
-		Render();
-		break;
-	case 2:
-		std::cout << "\n Dificuldade escolhida - Normal\n";
-		system("pause");
-		estadoTela += 1;
-		Render();
-		break;
-	case 3:
-		std::cout << "\n Dificuldade escolhida - Hard\n";
-		system("pause");
-		estadoTela += 1;
-		Render();
-		break;
-	case 4:
-		std::cout << "\n Dificuldade escolhida - Extreme\n";
-		system("pause");
-		estadoTela += 1;
-		Render();
-		break;
-	default:
-		std::cout << "\n Nada\n";
-	}
+	Difi[0].setFont(font);
+	if (userInput == 0)	Difi[0].setFillColor(sf::Color::Green);
+	else Difi[0].setFillColor(sf::Color::White);
+	Difi[0].setString("Easy");
+	Difi[0].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 1));
+
+	Difi[1].setFont(font);
+	if (userInput == 1) Difi[1].setFillColor(sf::Color::Green);
+	else  Difi[1].setFillColor(sf::Color::White);
+	Difi[1].setString("Normal");
+	Difi[1].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 2));
+
+	Difi[2].setFont(font);
+	if (userInput == 2) Difi[2].setFillColor(sf::Color::Green);
+	else Difi[2].setFillColor(sf::Color::White);
+	Difi[2].setString("Hard");
+	Difi[2].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 3));
+
+	Difi[3].setFont(font);
+	if (userInput == 3) Difi[3].setFillColor(sf::Color::Green);
+	else Difi[3].setFillColor(sf::Color::White);
+	Difi[3].setString("Extreme");
+	Difi[3].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 4));
 }
 
 void Manager::UpdateJogo()
 {
 	{
-
 		if (y > 0) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) x += 3;
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) x -= 3;
@@ -174,7 +234,7 @@ void Manager::UpdateJogo()
 			dy += 0.2;
 			y += dy;
 
-			//chão
+			//chÃ£o
 			if (y > 550) {
 				dy = 0;
 				jumps = 0;
@@ -183,13 +243,13 @@ void Manager::UpdateJogo()
 			if (x > 970)  x -= 3;
 			if (x < 0) x += 3;
 			//esquerda
-			if ((x > 250 - 25) && (x < 250 - 15) && (y > 480 - 35) && (y < 480))    x -= 3;
-			if ((x > 650 - 25) && (x < 650 - 15) && (y > 480 - 35) && (y < 480))    x -= 3;
-			if ((x > 900 - 25) && (x < 900 - 15) && (y > 350 - 35) && (y < 350))    x -= 3;
+			if ((x > 250 - 25) && (x < 250 - 15) && (y > 480 - 35) && (y < 480))	x -= 3;
+			if ((x > 650 - 25) && (x < 650 - 15) && (y > 480 - 35) && (y < 480))	x -= 3;
+			if ((x > 900 - 25) && (x < 900 - 15) && (y > 350 - 35) && (y < 350))	x -= 3;
 			//direita
-			if ((x > 250 + 150 - 5) && (x < 250 + 150 + 5) && (y > 480 - 35) && (y < 480))  x += 3;
-			if ((x > 650 + 150 - 5) && (x < 650 + 150 + 5) && (y > 480 - 35) && (y < 480))  x += 3;
-			if ((x > 900 + 75 - 5) && (x < 900 + 75 + 5) && (y > 350 - 35) && (y < 350))    x += 3;
+			if ((x > 250 + 150 - 5) && (x < 250 + 150 + 5) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 650 + 150 - 5) && (x < 650 + 150 + 5) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 900 + 75 - 5) && (x < 900 + 75 + 5) && (y > 350 - 35) && (y < 350))	x += 3;
 			//cima
 			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
 				dy = 0;
@@ -204,14 +264,33 @@ void Manager::UpdateJogo()
 				jumps = 0;
 			}
 			//baixo
-			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))    dy += 10;
-			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))    dy += 10;
-			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 + 15 + 5) && (y > 350 - 15 - 10) && (dy < 0)) dy += 10;
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))	dy += 10;
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))	dy += 10;
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 + 15 + 5) && (y > 350 - 15 - 10) && (dy < 0))	dy += 10;
 		}
 		else {
 			dy += 10;
 			y += dy;
 		}
+
+		enemy_posY += step;
+
+		if (enemy_posY >= 400 || enemy_posY <= 100)
+		{
+			step *= -1;
+		}
+		spriteEnemy.setPosition(enemy_posX, enemy_posY);
+
+		if ((x > (enemy_posX - 30)) && (x < (enemy_posX + 60)) &&(y > (enemy_posY - 30)) && (y < (enemy_posY +60))) {
+			x = 50, y = 550;
+			life -= 1;
+		}
+		
+		if (life == -1) life = 3;
+
+		spriteStar1.setPosition(star_posX, star_posY);
+		spriteStar2.setPosition(star_posX + 60, star_posY);
+		spriteStar3.setPosition(star_posX + 120, star_posY);
 	}
 }
 
@@ -221,6 +300,16 @@ void Manager::UpdateGameOver()
 
 void Manager::RenderMenu()
 {
+	for (int i = 0; i < Items; i++) {
+		app->draw(menu[i]);
+	}
+}
+
+void Manager::RenderDifficulty()
+{
+	for (int i = 0; i < choose; i++) {
+		app->draw(Difi[i]);
+	}
 }
 
 void Manager::RenderJogo()
@@ -249,7 +338,22 @@ void Manager::RenderJogo()
 	app->draw(rect1);
 	app->draw(rect2);
 	app->draw(rect3);
-	app->display();
+	app->draw(spriteEnemy);
+
+	switch (life) {
+	case 3 :
+		app->draw(spriteStar1);
+		app->draw(spriteStar2);
+		app->draw(spriteStar3);
+		break;
+	case 2 :
+		app->draw(spriteStar1);
+		app->draw(spriteStar2);
+		break;
+	case 1 :
+		app->draw(spriteStar1);
+		break;
+	}
 }
 
 void Manager::RenderGameOver()
