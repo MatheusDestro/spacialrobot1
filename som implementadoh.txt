@@ -1,0 +1,2 @@
+	sf::SoundBuffer ballSoundBuffer, applSoundBuffer, deathSoundBuffer;
+	sf::Sound ballSound, applSound, deathSound;
