@@ -1,0 +1,127 @@
+#include "Manager.h"
+
+
+
+
+Manager::Manager()
+{
+	app = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Spacial Robot");
+	app->setFramerateLimit(120);
+
+	textureEnemy.loadFromFile("enemy.jpg", sf::IntRect(20, 20, 60, 60));
+	spriteEnemy.setTexture(textureEnemy);
+	step = 1;
+
+	textureStar.loadFromFile("Imagens/star.jpg", sf::IntRect(0, 0, 20, 20));
+	spriteStar1.setTexture(textureStar);
+	spriteStar2.setTexture(textureStar);
+	spriteStar3.setTexture(textureStar);
+
+	if (!font.loadFromFile("arial.ttf")) {
+		// handle error
+	}
+
+	//sound for ball
+	if (!ballSoundBuffer.loadFromFile("resourse/ball.ogg"))
+		std::cout << "erro" << std::endl;
+	ballSound.setBuffer(ballSoundBuffer);
+	
+	//sound for win
+	if (!applSoundBuffer.loadFromFile("resourse/appl.ogg"))
+		std::cout << "erro" << std::endl;
+	applSound.setBuffer(applSoundBuffer);
+
+	//sound for death
+	if (!deathSoundBuffer.loadFromFile("resourse/death.ogg"))
+		std::cout << "erro" << std::endl;
+	deathSound.setBuffer(deathSoundBuffer);
+
+}
+
+void Manager::UpdateJogo()
+{
+	{
+		if (y > 0) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) x += 3;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) x -= 3;
+			if (jumps < 1) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+					dy = -8;
+					jumps += 1;
+					ballSound.play();
+
+
+				}
+			}
+
+			dy += 0.2;
+			y += dy;
+
+			//chão
+			if (y > 550) {
+				dy = 0;
+				jumps = 0;
+
+			}
+			//tela
+			if (x > 970)  x -= 3;
+			if (x < 0) x += 3;
+			//esquerda
+			if ((x > 250 - 25) && (x < 250 - 15) && (y > 480 - 35) && (y < 480))	x -= 3;
+			if ((x > 650 - 25) && (x < 650 - 15) && (y > 480 - 35) && (y < 480))	x -= 3;
+			if ((x > 900 - 25) && (x < 900 - 15) && (y > 350 - 35) && (y < 350))	x -= 3;
+			//direita
+			if ((x > 250 + 150 - 5) && (x < 250 + 150 + 5) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 650 + 150 - 5) && (x < 650 + 150 + 5) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 900 + 75 - 5) && (x < 900 + 75 + 5) && (y > 350 - 35) && (y < 350))	x += 3;
+			//cima
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+
+			}
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+
+			}
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 - 15 - 5) && (y > 350 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+				applSound.play();
+				
+
+			}
+			//baixo
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))	dy += 10;
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 - 10) && (y < 480 + 15 + 5) && (y > 480 - 15 - 10) && (dy < 0))	dy += 10;
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 - 10) && (y < 350 + 15 + 5) && (y > 350 - 15 - 10) && (dy < 0))	dy += 10;
+		}
+		else {
+			dy += 10;
+			y += dy;
+		}
+		enemy_posY += step;
+
+		if (enemy_posY >= 400 || enemy_posY <= 100)
+		{
+			step *= -1;
+		}
+		spriteEnemy.setPosition(enemy_posX, enemy_posY);
+
+		if ((x > (enemy_posX - 30)) && (x < (enemy_posX + 60)) && (y >(enemy_posY - 30)) && (y < (enemy_posY + 60))) {
+			x = 50, y = 550;
+			life -= 1;
+			deathSound.play();
+
+		}
+
+		if (life == -1) life = 3;
+
+		spriteStar1.setPosition(star_posX, star_posY);
+		spriteStar2.setPosition(star_posX + 60, star_posY);
+		spriteStar3.setPosition(star_posX + 120, star_posY);
+
+	
+	}
+}
