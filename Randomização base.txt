@@ -1,0 +1,30 @@
+Manager::Manager()
+{
+	app = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Spacial Robot");
+	app->setFramerateLimit(120);
+
+	textureEnemy.loadFromFile("enemy.jpg", sf::IntRect(20, 20, 60, 60));
+	spriteEnemy.setTexture(textureEnemy);
+	step = 1;
+
+	textureStar.loadFromFile("star.jpg", sf::IntRect(0, 0, 20, 20));
+	spriteStar1.setTexture(textureStar);
+	spriteStar2.setTexture(textureStar);
+	spriteStar3.setTexture(textureStar);
+
+	if (!font.loadFromFile("arial.ttf")) {
+		// handle error
+	}
+	p[0] = 0;
+	p[1] = 1;
+	p[2] = 2;
+}
+
+
+	if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[0]))) x += 3;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[1]))) x -= 3;
+			if (jumps < 1) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[2]))) {
+					dy = -8;
+					jumps += 1;
+				}
