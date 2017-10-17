@@ -1,7 +1,6 @@
 #include "Manager.h"
 
 
-
 Manager::Manager()
 {
 	app = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Spacial Robot");
@@ -88,22 +87,22 @@ void Manager::Inputs()
 						case 0:
 							Menu += 1;
 							estadoTela += 1;
-							Programa();
+							Easy();
 							break;
 						case 1:
 							Menu += 1;
 							estadoTela += 1;
-							Programa();
+							Normal();
 							break;
 						case 2:
 								Menu += 1;
 							estadoTela += 1;
-							Programa();
+							Hard();
 							break;
 						case 3:
 							Menu += 1;
 							estadoTela += 1;
-							Programa();
+							Extreme();
 							break;
 						}
 					}
@@ -197,37 +196,38 @@ void Manager::Difficulty() {
 	if (userInput == 0)	Difi[0].setFillColor(sf::Color::Green);
 	else Difi[0].setFillColor(sf::Color::White);
 	Difi[0].setString("Easy");
-	Difi[0].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 1));
+	Difi[0].setPosition(sf::Vector2f((SCREEN_WIDTH / 6)* 4, (SCREEN_HEIGHT / 5) * 1));
 
 	Difi[1].setFont(font);
 	if (userInput == 1) Difi[1].setFillColor(sf::Color::Green);
 	else  Difi[1].setFillColor(sf::Color::White);
 	Difi[1].setString("Normal");
-	Difi[1].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 2));
+	Difi[1].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 2));
 
 	Difi[2].setFont(font);
 	if (userInput == 2) Difi[2].setFillColor(sf::Color::Green);
 	else Difi[2].setFillColor(sf::Color::White);
 	Difi[2].setString("Hard");
-	Difi[2].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 3));
+	Difi[2].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 3));
 
 	Difi[3].setFont(font);
 	if (userInput == 3) Difi[3].setFillColor(sf::Color::Green);
 	else Difi[3].setFillColor(sf::Color::White);
 	Difi[3].setString("Extreme");
-	Difi[3].setPosition(sf::Vector2f(SCREEN_WIDTH / 6, SCREEN_HEIGHT / 5 * 4));
+	Difi[3].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 4));
 }
 
 void Manager::UpdateJogo()
 {
 	{
 		if (y > 0) {
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) x += 3;
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) x -= 3;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[0]))) x += 3;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[1]))) x -= 3;
 			if (jumps < 1) {
-				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[2]))) {
 					dy = -8;
 					jumps += 1;
+					//(sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
 				}
 			}
 
@@ -386,4 +386,74 @@ void Manager::MouseClicado()
 
 void Manager::MouseMovido()
 {
+}
+
+void Manager::Easy()
+{
+	srand(unsigned(time(0)));
+
+	while ((p[0] == p[1]) || (p[0] == p[2]) || (p[1] == p[2])) {
+		for (int i = 0; i <= 2; i++) {
+			p[i] = (rand() % 8);
+			std::cout << "P [" << i << "]" << p[i] << std::endl;
+			switch (p[i])
+			{
+			case 1:
+				p[i] = 22;
+				break;
+			case 2:
+				p[i] = 18;
+				break;
+			case 4:
+				p[i] = 71;
+				break;
+			case 5:
+				p[i] = 72;
+				break;
+			case 6:
+				p[i] = 73;
+				break;
+			case 7:
+				p[i] = 74;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	Programa();
+}
+
+void Manager::Normal()
+{
+	srand(unsigned(time(0)));
+
+	while ((p[0] == p[1]) || (p[0] == p[2]) || (p[1] == p[2])) {
+		for (int i = 0; i <= 2; i++) {
+			p[i] = (rand() % 26);
+			std::cout << "P [" << i << "]" << p[i] << std::endl;
+		}
+	}
+	Programa();
+}
+
+void Manager::Hard()
+{
+	srand(unsigned(time(0)));
+
+	while ((p[0] == p[1]) || (p[0] == p[2]) || (p[1] == p[2])) {
+		for (int i = 0; i <= 2; i++) {
+			p[i] = (rand() % 101);
+			std::cout << "P [" << i << "]" << p[i] << std::endl;
+		}
+	}
+	Programa();
+}
+
+void Manager::Extreme()
+{
+	p[0] = 72;
+	p[1] = 71;
+	p[2] = 73;
+	Programa();
 }
