@@ -2,6 +2,7 @@
 #include <iostream>
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
+#include <ctime>
 
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 1000
@@ -56,6 +57,7 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 
 	int getpresseditem;
 
+	int p[3];
 public:
 	Manager();
 	~Manager();
@@ -71,6 +73,11 @@ public:
 	void UpdateJogo();
 	void UpdateGameOver();
 
+	void Easy();
+	void Normal();
+	void Hard();
+	void Extreme();
+
 	void RenderMenu();
 	void RenderDifficulty();
 	void RenderJogo();
@@ -80,4 +87,3 @@ public:
 	void MouseClicado();
 	void MouseMovido();
 };
-
