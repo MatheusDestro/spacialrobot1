@@ -1,0 +1,24 @@
+Menu padrao
+
+Menu da dificuldade
+
+Personagem (Rob‘)
+
+Plataforma padr„o
+
+Plataforma que muda de fase (Elevador)
+
+Vida (Bateria)
+
+Inimigo que se movimenta
+
+Inimigo que atira
+
+Background (Corredor)
+
+Ch„o 
+
+Tiro
+
+Pesonagem morto
+

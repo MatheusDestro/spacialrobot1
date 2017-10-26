@@ -1,0 +1,17 @@
+quando muda de opção no menu, um sonzinho de efeito
+
+som de propulsor para o inimigo
+
+som de pulo para o personagem
+
+som "entrando no elevador" no fim de fase
+
+som de tiro a laser
+
+som de morte
+
+som de queda
+
+som de confirmação quando aperta uma tecla do menu
+
+somzinho de vitória 
