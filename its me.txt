@@ -1,0 +1,15 @@
+mais 5 fases com dificuldades
+
+menu
+
+30 s
+
+alterações no mapa que podem te mata
+
+implementar no código tudo que o Destro e a Isa produzirem
+
+Tela safe
+
+Opção de mostra a tecla ou não
+
+Mostrar a tecla para o jogador
