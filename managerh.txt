@@ -3,6 +3,8 @@
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
 #include <ctime>
+#include <string>
+
 
 #define SCREEN_HEIGHT 600
 #define SCREEN_WIDTH 1000
@@ -14,13 +16,13 @@
 #define JOGO 1
 #define GAMEOVER 2
 
-class Manager
+	class Manager
 {
 private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	sf::RenderWindow *app = nullptr;
 	sf::Vector2i posicaoMouse;
 	sf::Event eventos;
-
+	std::string dicionario[101];
 	short estadoTela = MENU;
 	bool quit = false;
 
@@ -54,6 +56,9 @@ private: //AQUI VOCÊ CRIA AS VARIÁVEIS
 	sf::Font font;
 	sf::Text menu[Items];
 	sf::Text Difi[choose];
+	sf::Text Tecla[3];
+
+	bool options = true;
 
 	int getpresseditem;
 
@@ -86,4 +91,7 @@ public:
 	void InputTeclado();
 	void MouseClicado();
 	void MouseMovido();
+
+	void PrintarTeclas();
+	void CriarDicionario();
 };
