@@ -1,0 +1,630 @@
+#include "Manager.h"
+
+
+Manager::Manager()
+{
+	app = new sf::RenderWindow(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Spacial Robot");
+	app->setFramerateLimit(120);
+
+	textureEnemy.loadFromFile("inimigo2.png", sf::IntRect(0, 0, 82, 74));
+	spriteEnemy.setTexture(textureEnemy);
+	step = 1;
+
+	texturepersonagem.loadFromFile("personagem2.png", sf::IntRect(0, 0, 78, 72));
+	spritepersonagem.setTexture(texturepersonagem);
+
+	textureCenario.loadFromFile("cenario.png");
+	spriteCenario.setTexture(textureCenario);
+
+	texturePlat.loadFromFile("plataforma2.png", sf::IntRect(0, 0, 150, 20));
+	spritePlat.setTexture(texturePlat);
+	spritePlat1.setTexture(texturePlat);
+
+	textureStar.loadFromFile("star.jpg", sf::IntRect(0, 0, 20, 20));
+	spriteStar1.setTexture(textureStar);
+	spriteStar2.setTexture(textureStar);
+	spriteStar3.setTexture(textureStar);
+
+	if (!font.loadFromFile("arial.ttf")) {
+		// handle error
+	}
+
+	CriarDicionario();
+}
+
+Manager::~Manager()
+{
+	delete app;
+}
+
+void Manager::Programa()
+{
+	while (quit == false)
+	{
+		Inputs();
+		Update();
+		Render();
+	}
+}
+
+void Manager::Inputs()
+{
+	while (app->pollEvent(eventos))
+	{
+		posicaoMouse = sf::Mouse::getPosition(*app);
+		switch (eventos.type)
+		{
+		case sf::Event::Closed:
+			quit = true;
+			break;
+		case sf::Event::KeyPressed:
+			InputTeclado();
+			break;
+		case sf::Event::MouseButtonPressed:
+			MouseClicado();
+			break;
+		case sf::Event::MouseMoved:
+			MouseMovido();
+			break;
+			if (estadoTela == MENU) {
+		case sf::Event::KeyReleased:
+			switch (eventos.key.code) {
+			case sf::Keyboard::Up:
+				userInput -= 1;
+				getpresseditem = userInput;
+				break;
+			case sf::Keyboard::Down:
+				userInput += 1;
+				getpresseditem = userInput;
+				break;
+			case sf::Keyboard::Return:
+				switch (Menu)
+				{
+				case 0:
+					switch (getpresseditem) {
+					case 0:
+						Difficulty();
+						Menu += 1;
+						break;
+					case 1:
+						std::cout << "Opissoeins Pressed" << std::endl;
+						if (options == true)
+							options = false;
+						else
+							options = true;
+						break;
+					case 2:
+						quit = true;
+						break;
+					}
+					break;
+				case 1:
+					switch (getpresseditem) {
+					case 0:
+						clock.restart();
+						Menu += 1;
+						estadoTela += 1;
+						Easy();
+						break;
+					case 1:
+						clock.restart();
+						Menu += 1;
+						estadoTela += 1;
+						Normal();
+						break;
+					case 2:
+						clock.restart();
+						Menu += 1;
+						estadoTela += 1;
+						Hard();
+						break;
+					case 3:
+						clock.restart();
+						Menu += 1;
+						estadoTela += 1;
+						Extreme();
+						break;
+					}
+				}
+			}
+			}
+		}
+	}
+}
+
+void Manager::Update()
+{
+	switch (estadoTela)
+	{
+	case MENU:
+		switch (Menu) {
+		case 0:
+			UpdateMenu();
+			break;
+		case 1:
+			Difficulty();
+			break;
+		}
+		break;
+
+	case JOGO:
+		UpdateJogo();
+		break;
+
+	case GAMEOVER:
+		UpdateGameOver();
+		break;
+	}
+}
+
+void Manager::Render()
+{
+	app->display();
+	switch (estadoTela)
+	{
+	case MENU:
+		switch (Menu) {
+		case 0:
+			RenderMenu();
+			break;
+		case 1:
+			RenderDifficulty();
+			break;
+		}
+		break;
+
+	case JOGO:
+		RenderJogo();
+		break;
+
+	case GAMEOVER:
+		RenderGameOver();
+		break;
+	}
+}
+
+void Manager::UpdateMenu()
+{
+	if (userInput == 3) userInput = 2;
+	if (userInput == -1) userInput = 0;
+
+	menu[0].setFont(font);
+	if (userInput == 0)	menu[0].setFillColor(sf::Color::Green);
+	else menu[0].setFillColor(sf::Color::White);
+	menu[0].setString("Start");
+	menu[0].setPosition(sf::Vector2f(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4 * 1));
+
+	menu[1].setFont(font);
+	if (userInput == 1) menu[1].setFillColor(sf::Color::Green);
+	else if (options == true)
+		menu[1].setFillColor(sf::Color::Blue);
+	else
+		menu[1].setFillColor(sf::Color::Red);
+	menu[1].setString("Options");
+	menu[1].setPosition(sf::Vector2f(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4 * 2));
+
+	menu[2].setFont(font);
+	if (userInput == 2) menu[2].setFillColor(sf::Color::Green);
+	else menu[2].setFillColor(sf::Color::White);
+	menu[2].setString("Exit");
+	menu[2].setPosition(sf::Vector2f(SCREEN_WIDTH / 4, SCREEN_HEIGHT / 4 * 3));
+
+}
+
+void Manager::Difficulty() {
+	if (userInput == 4) userInput = 3;
+	if (userInput == -1) userInput = 0;
+
+	Difi[0].setFont(font);
+	if (userInput == 0)	Difi[0].setFillColor(sf::Color::Green);
+	else Difi[0].setFillColor(sf::Color::White);
+	Difi[0].setString("Easy");
+	Difi[0].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 1));
+
+	Difi[1].setFont(font);
+	if (userInput == 1) Difi[1].setFillColor(sf::Color::Green);
+	else  Difi[1].setFillColor(sf::Color::White);
+	Difi[1].setString("Normal");
+	Difi[1].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 2));
+
+	Difi[2].setFont(font);
+	if (userInput == 2) Difi[2].setFillColor(sf::Color::Green);
+	else Difi[2].setFillColor(sf::Color::White);
+	Difi[2].setString("Hard");
+	Difi[2].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 3));
+
+	Difi[3].setFont(font);
+	if (userInput == 3) Difi[3].setFillColor(sf::Color::Green);
+	else Difi[3].setFillColor(sf::Color::White);
+	Difi[3].setString("Extreme");
+	Difi[3].setPosition(sf::Vector2f((SCREEN_WIDTH / 6) * 4, (SCREEN_HEIGHT / 5) * 4));
+}
+
+void Manager::UpdateJogo()
+{
+	{
+		if (y > 0) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[0]))) x += 3;
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[1]))) x -= 3;
+			if (jumps < 1) {
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key(p[2]))) {
+					dy = -8;
+					jumps += 1;
+					//(sf::Keyboard::isKeyPressed(sf::Keyboard::))
+				}
+			}
+
+			dy += 0.2;
+			y += dy;
+
+			//chão
+			if (y > 550) {
+				dy = 0;
+				jumps = 0;
+			}
+			//tela
+			if (x > 970)  x -= 3;
+			if (x < 0) x += 3;
+			//esquerda
+			if ((x > 250 - 25) && (x < 250 - 15) && (y > 480 - 35) && (y < 480))	x -= 3;
+			if ((x > 650 - 25) && (x < 650 - 15) && (y > 480 - 35) && (y < 480))	x -= 3;
+			if ((x > 900 - 25) && (x < 900 - 15) && (y > 350 - 35) && (y < 350))	x -= 3;
+			//direita
+			if ((x > 250 + 150 - 5) && (x < 250 + 150 + 5 + 10) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 650 + 150 - 5) && (x < 650 + 150 + 5 + 10) && (y > 480 - 35) && (y < 480))	x += 3;
+			if ((x > 900 + 75 - 5) && (x < 900 + 75 + 5 + 10) && (y > 350 - 35) && (y < 350))	x += 3;
+			//cima
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 + 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 + 10) && (y < 480 - 15 - 5) && (y > 480 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 + 10) && (y < 350 - 15 - 5) && (y > 350 - 15 - 20) && (dy > 0)) {
+				dy = 0;
+				jumps = 0;
+			}
+			//baixo
+			if ((x > 250 - 15 - 20 / 2) && (x < 250 + 150 + 10) && (y < 480 + 15 + 5 + 36) && (y > 480 - 15 - 10 + 36) && (dy < 0))	dy += 10;
+			if ((x > 650 - 15 - 20 / 2) && (x < 650 + 150 + 10) && (y < 480 + 15 + 5 + 36) && (y > 480 - 15 - 10 + 36) && (dy < 0))	dy += 10;
+			if ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 + 10) && (y < 350 + 15 + 5 + 36) && (y > 350 - 15 - 10 + 36) && (dy < 0))	dy += 10;
+		}
+		else {
+			dy += 10;
+			y += dy;
+		}
+
+		enemy_posX += step;
+
+		if (enemy_posX >= 400 || enemy_posX <= 100)
+		{
+			step *= -1;
+		}
+		spriteEnemy.setPosition(enemy_posX, enemy_posY);
+
+		if ((x > (enemy_posX - 30)) && (x < (enemy_posX + 112)) && (y >(enemy_posY - 30)) && (y < (enemy_posY + 100))) {
+			x = 50, y = 550;
+			life -= 1;
+			clock.restart();
+			sf::sleep(minuslife);
+		}
+		//fim de jogo
+		if ((life == 0) || ((x > 900 - 15 - 10 / 2) && (x < 900 + 75 + 10) && (y < 350 - 15 - 5) && (y > 350 - 15 - 20)) || (tempo > 30)) {
+			estadoTela = 0;
+			Menu = 0;
+			userInput = 0;
+			getpresseditem = 0;
+			life = 3;
+			p[0] = 0;
+			p[1] = 0;
+			p[2] = 0;
+			x = 50;
+			y = 550;
+			clock.restart();
+			tempo = 0;
+		}
+		spriteStar1.setPosition(star_posX, star_posY);
+		spriteStar2.setPosition(star_posX + 60, star_posY);
+		spriteStar3.setPosition(star_posX + 120, star_posY);
+
+		timing = clock.getElapsedTime();
+		tempo = timing.asSeconds();
+		crono = (30 - timing.asSeconds());
+		cronometro = std::to_string(float(crono));
+		Cronometro.setFont(font);
+		Cronometro.setFillColor(sf::Color::Black);
+		Cronometro.setString(cronometro);
+	}
+}
+
+void Manager::UpdateGameOver()
+{
+}
+
+void Manager::RenderMenu()
+{
+	for (int i = 0; i < Items; i++) {
+		app->draw(menu[i]);
+	}
+}
+
+void Manager::RenderDifficulty()
+{
+	for (int i = 0; i < choose; i++) {
+		app->draw(Difi[i]);
+	}
+}
+
+void Manager::RenderJogo()
+{
+	sf::RectangleShape rect3(sf::Vector2f(75, 10));
+
+	rect3.setFillColor(sf::Color::Blue);
+
+	spritepersonagem.setOrigin(39,36);
+	spritepersonagem.setPosition(x, y);
+
+	spritePlat.setPosition(250,480);
+
+	spritePlat1.setPosition(650, 480);
+
+	rect3.setPosition(900, 350);
+
+	app->draw(spriteCenario);
+	app->draw(spritepersonagem);
+	app->draw(spritePlat);
+	app->draw(spritePlat1);
+	app->draw(rect3);
+	app->draw(spriteEnemy);
+
+	switch (life) {
+	case 3:
+		app->draw(spriteStar1);
+		app->draw(spriteStar2);
+		app->draw(spriteStar3);
+		break;
+	case 2:
+		app->draw(spriteStar1);
+		app->draw(spriteStar2);
+		break;
+	case 1:
+		app->draw(spriteStar1);
+		break;
+	}
+	for (short i = 0; i < 3; i++)
+		app->draw(Tecla[i]);
+
+	Cronometro.setPosition(sf::Vector2f((SCREEN_WIDTH / 2) - 100, (SCREEN_HEIGHT / 10) * 0));
+	app->draw(Cronometro);
+}
+
+void Manager::RenderGameOver()
+{
+}
+
+void Manager::InputTeclado()
+{
+	switch (eventos.key.code)
+	{
+	case sf::Keyboard::Escape:
+		quit = true;
+		break;
+	case sf::Keyboard::A:
+		break;
+	}
+}
+
+void Manager::MouseClicado()
+{
+	switch (eventos.mouseButton.button)
+	{
+	case sf::Mouse::Left: //Mouse Botao Esquerdo Pressionado
+		break;
+
+	case sf::Mouse::Right: //Mouse Botao Direito Pressionado
+		break;
+	}
+}
+
+void Manager::MouseMovido()
+{
+}
+
+void Manager::PrintarTeclas()
+{
+	for (short i = 0; i < 3; i++) {
+		std::cout << p[i] << ": " << dicionario[p[i]] << std::endl;
+		if (options == true) {
+			Tecla[i].setFont(font);
+			Tecla[i].setFillColor(sf::Color::White);
+			Tecla[i].setString(dicionario[p[i]]);
+			Tecla[i].setPosition(sf::Vector2f((SCREEN_WIDTH / 10) * (7 + i), (SCREEN_HEIGHT / 10) * 0));
+		}
+		else {
+			Tecla[i].setFont(font);
+			Tecla[i].setFillColor(sf::Color::White);
+			Tecla[i].setString("-");
+			Tecla[i].setPosition(sf::Vector2f((SCREEN_WIDTH / 10) * (7 + i), (SCREEN_HEIGHT / 10) * 0));
+		}
+	}
+}
+
+void Manager::CriarDicionario()
+{
+
+	dicionario[0] = "A";
+	dicionario[1] = "B";
+	dicionario[2] = "C";
+	dicionario[3] = "D";
+	dicionario[4] = "E";
+	dicionario[5] = "F";
+	dicionario[6] = "G";
+	dicionario[7] = "H";
+	dicionario[8] = "I";
+	dicionario[9] = "J";
+	dicionario[10] = "K";
+	dicionario[11] = "L";
+	dicionario[12] = "M";
+	dicionario[13] = "N";
+	dicionario[14] = "O";
+	dicionario[15] = "P";
+	dicionario[16] = "Q";
+	dicionario[17] = "R";
+	dicionario[18] = "S";
+	dicionario[19] = "T";
+	dicionario[20] = "U";
+	dicionario[21] = "V";
+	dicionario[22] = "W";
+	dicionario[23] = "X";
+	dicionario[24] = "Y";
+	dicionario[25] = "Z";
+	dicionario[26] = "0";
+	dicionario[27] = "1";
+	dicionario[28] = "2";
+	dicionario[29] = "3";
+	dicionario[30] = "4";
+	dicionario[31] = "5";
+	dicionario[32] = "6";
+	dicionario[33] = "7";
+	dicionario[34] = "8";
+	dicionario[35] = "9";
+	dicionario[36] = "Escape";
+	dicionario[37] = "LControl";
+	dicionario[38] = "LShift";
+	dicionario[39] = "LAlt";
+	dicionario[40] = "LSystem";
+	dicionario[41] = "RControl";
+	dicionario[42] = "RShift";
+	dicionario[43] = "RAlt";
+	dicionario[44] = "RSystem";
+	dicionario[45] = "Menu";
+	dicionario[46] = "LBracket";
+	dicionario[47] = "RBracket";
+	dicionario[48] = "SemiColon";
+	dicionario[49] = "Comma";
+	dicionario[50] = "Period";
+	dicionario[51] = "Quote";
+	dicionario[52] = "Slash";
+	dicionario[53] = "BackSlash";
+	dicionario[54] = "Tilde";
+	dicionario[55] = "Equal";
+	dicionario[56] = "Dash";
+	dicionario[57] = "Space";
+	dicionario[58] = "Return";
+	dicionario[59] = "BackSpace";
+	dicionario[60] = "Tab";
+	dicionario[61] = "PageUp";
+	dicionario[62] = "PageDown";
+	dicionario[63] = "End";
+	dicionario[64] = "Home";
+	dicionario[65] = "Insert";
+	dicionario[66] = "Delete";
+	dicionario[67] = "Add";
+	dicionario[68] = "Subtract";
+	dicionario[69] = "Multiply";
+	dicionario[70] = "Divide";
+	dicionario[71] = "Left";
+	dicionario[72] = "Right";
+	dicionario[73] = "Up";
+	dicionario[74] = "Down";
+	dicionario[75] = "Num0";
+	dicionario[76] = "Num1";
+	dicionario[77] = "Num2";
+	dicionario[78] = "Num3";
+	dicionario[79] = "Num4";
+	dicionario[80] = "Num5";
+	dicionario[81] = "Num6";
+	dicionario[82] = "Num7";
+	dicionario[83] = "Num8";
+	dicionario[84] = "Num9";
+	dicionario[85] = "F1";
+	dicionario[86] = "F2";
+	dicionario[87] = "F3";
+	dicionario[88] = "F4";
+	dicionario[89] = "F5";
+	dicionario[90] = "F6";
+	dicionario[91] = "F7";
+	dicionario[92] = "F8";
+	dicionario[93] = "F9";
+	dicionario[94] = "F10";
+	dicionario[95] = "F11";
+	dicionario[96] = "F12";
+	dicionario[97] = "F13";
+	dicionario[98] = "F14";
+	dicionario[99] = "F15";
+	dicionario[100] = "Pause";
+
+}
+
+void Manager::Easy()
+{
+	srand(unsigned(time(0)));
+
+	while ((p[0] == p[1]) || (p[0] == p[2]) || (p[1] == p[2])) {
+		for (int i = 0; i <= 2; i++) {
+			p[i] = (rand() % 8);
+			switch (p[i])
+			{
+			case 1:
+				p[i] = 22;
+				break;
+			case 2:
+				p[i] = 18;
+				break;
+			case 4:
+				p[i] = 71;
+				break;
+			case 5:
+				p[i] = 72;
+				break;
+			case 6:
+				p[i] = 73;
+				break;
+			case 7:
+				p[i] = 74;
+				break;
+			default:
+				break;
+			}
+		}
+	}
+	PrintarTeclas();
+	Programa();
+}
+
+void Manager::Normal()
+{
+	srand(unsigned(time(0)));
+
+	while ((p[0] == p[1]) || (p[0] == p[2]) || (p[1] == p[2])) {
+		for (int i = 0; i <= 2; i++) {
+			p[i] = (rand() % 26);
+		}
+	}
+	PrintarTeclas();
+	Programa();
+}
+
+void Manager::Hard()
+{
+	srand(unsigned(time(0)));
+
+	while ((p[0] == p[1]) || (p[0] == p[2]) || (p[1] == p[2])) {
+		for (int i = 0; i <= 2; i++) {
+			p[i] = (rand() % 101);
+		}
+	}
+	PrintarTeclas();
+	Programa();
+}
+
+void Manager::Extreme()
+{
+	p[0] = 72;
+	p[1] = 71;
+	p[2] = 73;
+	PrintarTeclas();
+	Programa();
+}
